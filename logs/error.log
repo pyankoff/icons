@@ -1,0 +1,2 @@
+2014/12/28 16:38:49 [alert] 16309#0: lua_code_cache is off; this will hurt performance in /home/ubuntu/icons/nginx.conf.compiled:15
+2014/12/28 16:43:41 [alert] 16386#0: lua_code_cache is off; this will hurt performance in /home/ubuntu/icons/nginx.conf.compiled:15
