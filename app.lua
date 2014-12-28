@@ -4,6 +4,10 @@ local torch = require("torch")
 require("nn")
 require("image")
 
+torch.setdefaulttensortype('torch.FloatTensor')
+local network = 'icons97good.net'
+local model = torch.load(network, 'ascii')
+
 app:match("/", function(self)
   local file = self.params.upload
 
@@ -13,8 +17,12 @@ app:match("/", function(self)
   
   local huy = torch.Tensor(20)
   local img = image.load("img.jpg")
+  img = image.scale(img, 32, 32)
 
-  return ""..img:size()[2]
+  output = model:forward(img)
+  y, result = torch.max(output, 1)
+
+  return ""..result[1]
 end)
 
 return app
