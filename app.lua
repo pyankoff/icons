@@ -1,8 +1,8 @@
 local lapis = require("lapis")
 local app = lapis.Application()
-require 'torch'
-require 'nn'
-require 'image'
+local torch = require 'torch'
+local nn = require 'nn'
+local image = require 'image'
 
 app:match("/", function(self)
   local file = self.params.upload
@@ -12,7 +12,7 @@ app:match("/", function(self)
   
   local img = image.load("img.jpg")
 
-  return img:size()
+  print(img:size())
 end)
 
 return app
