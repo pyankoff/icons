@@ -1,6 +1,7 @@
 local lapis = require("lapis")
 local app = lapis.Application()
 local torch = require("torch")
+local os = require("os")
 require("nn")
 require("image")
 
@@ -18,13 +19,12 @@ x = {31, 183, 335, 487}
 y = {89, 254, 420, 586, 753, 972}
 
 app:match("/", function(self)
-  local file = self.params.upload
+  local url = self.params.url
 
-  local save = io.open("img.jpg", "w")
-  save:write(file.content)  
-  save:close()
-  
-  local inputImage = image.load("img.jpg")
+  os.execute("wget " .. url)
+
+  response = "bitch "
+  local inputImage = image.load(paths.basename(url))
   for i = 1, 4 do
     for j = 1, 6 do
       icon = inputImage[{{}, {y[j],y[j]+120}, {x[i],x[i]+120}}]
@@ -32,10 +32,10 @@ app:match("/", function(self)
 
       output = model:forward(img)
       k, result = torch.max(output, 1)
-      print(appsList[result[1]+1])
+      response = response .. appsList[result[1]+1] .. "\n"
     end
   end
-
+  return { json = { apps = response }}
 end)
 
 return app
