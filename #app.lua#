@@ -1,13 +1,14 @@
 local lapis = require("lapis")
 local app = lapis.Application()
 local torch = require("torch")
-local os = require("os")
 require("nn")
 require("image")
 
 torch.setdefaulttensortype('torch.FloatTensor')
 local network = 'icons97good.net'
 local model = torch.load(network, 'ascii')
+local http = require("socket.http")
+local ltn12 = require("ltn12")
 
 local file = io.open("filteredApps.txt", "r");
 local appsList = {}
@@ -19,17 +20,21 @@ x = {31, 183, 335, 487}
 y = {89, 254, 420, 586, 753, 972}
 
 app:match("/", function(self)
-<<<<<<< HEAD
-  local url = self.params.url
 
-  os.execute("wget " .. url)
-
-  response = "bitch "
-  local inputImage = image.load(paths.basename(url))
-=======
-
+  local save = ltn12.sink.file(io.open("img.jpg", "w"))
+  
+  http.request {
+    url = 'http://files.parsetfss.com/84701a5b-45f4-4d58-a5d7-320fdb0785b1/tfss-ba54e0c9-301c-4153-80b1-884ae409b246-Image.jpg',
+    headers = 
+      {
+       ["X-Parse-Application-Id"] = "8jkrY7Z6l8nqEmzlUhc9wZmng3xcQgCa94UiyrQX",
+       ["X-Parse-REST-API-Key"] = "0205hOGPcMdWk5peNNfryk19dzBO9x9bNDhnyEmm"
+      },
+    sink = save,
+  } 
+  
   local inputImage = image.load("img.jpg")
->>>>>>> 4f27bf23c329d2f644c2f84f2053a6eba75e12df
+  text = ""
   for i = 1, 4 do
     for j = 1, 6 do
       icon = inputImage[{{}, {y[j],y[j]+120}, {x[i],x[i]+120}}]
@@ -37,10 +42,10 @@ app:match("/", function(self)
 
       output = model:forward(img)
       k, result = torch.max(output, 1)
-      response = response .. appsList[result[1]+1] .. "\n"
+      text = text .. " " .. appsList[result[1]+1] .. "\n\n"
     end
   end
-  return { json = { apps = response }}
+  return text
 end)
 
 return app
